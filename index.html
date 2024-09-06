@@ -1,0 +1,88 @@
+<script>
+emailjs.init('N9BJd8pk43RGraUpL');
+
+document.getElementById('contact-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    document.getElementById('name-error').textContent = '';
+    document.getElementById('email-error').textContent = '';
+    document.getElementById('message-error').textContent = '';
+
+    document.getElementById('name-error').style.display = 'none';
+    document.getElementById('email-error').style.display = 'none';
+    document.getElementById('message-error').style.display = 'none';
+    document.getElementById('success-message').style.display = 'none';
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    let valid = true;
+
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const commonFakeEmails = ['example', 'fake', 'test', 'noemail', 'invalid'];
+
+    if (!emailPattern.test(email)) {
+        document.getElementById('email-error').textContent = 'Please enter a valid email address.';
+        document.getElementById('email-error').style.display = 'block';
+        valid = false;
+    }
+
+    const emailDomain = email.split('@')[1];
+    const emailLocalPart = email.split('@')[0];
+
+    if (commonFakeEmails.some(fake => emailLocalPart.toLowerCase().includes(fake))) {
+        document.getElementById('email-error').textContent = 'Please enter a valid email, not a placeholder.';
+        document.getElementById('email-error').style.display = 'block';
+        valid = false;
+    }
+
+    if (name.length < 3) {
+        document.getElementById('name-error').textContent = 'The name must contain at least 3 letters.';
+        document.getElementById('name-error').style.display = 'block';
+        valid = false;
+    }
+
+    if (message.length <= 10) {
+        document.getElementById('message-error').textContent = 'The message must contain more than 10 characters.';
+        document.getElementById('message-error').style.display = 'block';
+        valid = false;
+    }
+
+    if (valid) {
+        emailjs.sendForm('service_eb7el5f', 'template_sjzhxi8', this)
+            .then(function(response) {
+                document.getElementById('success-message').textContent = 'Message successfully sent!';
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('contact-form').reset();
+            }, function(error) {
+                document.getElementById('success-message').textContent = 'An error occurred: ' + JSON.stringify(error);
+                document.getElementById('success-message').style.display = 'block';
+            });
+    }
+});
+
+
+document.getElementById('view-more').addEventListener('click', function(event) {
+    event.preventDefault();
+    
+    const hiddenPosts = document.getElementById('hidden-posts');
+    hiddenPosts.classList.toggle('hidden-posts');
+
+    if (hiddenPosts.classList.contains('hidden-posts')) {
+      this.textContent = 'View More →';
+    } else {
+      this.textContent = 'View Less ↑';
+    }
+  });
+
+document.getElementById('burger-menu').addEventListener('click', function() {
+    var nav = document.querySelector('.nav');
+    nav.classList.toggle('nav-active');
+});
+
+
+
+
+
+</script>
